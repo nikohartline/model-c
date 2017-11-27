@@ -19,9 +19,13 @@ boxplot(Modeling_C$X3); title("X3")
 boxplot(Modeling_C$X4); title("X4")
 
 cor(Modeling_C, method="pearson") #Correlation matrix of variables
-cor.test(Modeling_C$X1, Modeling_C$X3, method = "pearson") #correlation coefficient of 0.9 (p < 0.001). Introduces problems of multicollinearity in models that include both the X1 and X3 variables. X1 is used as the predictor for Y1 and X3 is used as the predictor for Y2. 
+cor.test(Modeling_C$X1, Modeling_C$X3, method = "pearson") #correlation coefficient of 0.9 (p < 0.001). Introduces problems of multicollinearity in models that include both the X1 and X3 variables. X1 is used as the predictor for Y1 and X3 is used as the predictor for Y2.
 
 #### Model Selection for Y1 ####
+
+cbrt = function(x) {
+  sign(x) * abs(x)^(1/3)
+}
 
 Modeling_C = mutate(Modeling_C,
                     X1_sq=X1^2,
@@ -31,7 +35,11 @@ Modeling_C = mutate(Modeling_C,
                     X3_sq=X3^2,
                     X3_cb=X3^3,
                     X4_sq=X4^2,
-                    X4_cb=X4^3) #creation of features for model selection
+                    X4_cb=X4^3,
+                    cbrtX1=cbrt(X1),
+                    cbrtX2=cbrt(X2),
+                    cbrtX3=cbrt(X3),
+                    cbrtX4=cbrt(X4)) #creation of features for model selection
 
 y1_logit_model_initial = glm("Y1~X1+X2+X4+X1_sq+X2_sq+X4_sq",
                              family = "binomial",
@@ -49,8 +57,16 @@ y1_logit_model_x1_x4 = glm("Y1~X1+X4",
 summary(y1_logit_model_x1_x4)
 #Chosen Model#
 
+y1_logit_model_x1_cbrtx4 = glm("Y1~X1+cbrtX4",
+                           family = "binomial",
+                           data = Modeling_C,
+                           control = list(maxit = 100))
+
+summary(y1_logit_model_x1_cbrtx4)
+
+
 data_scatter_y1 = ggplot(data = Modeling_C[-possible_outlier_rows,],
-                         aes(x = X1, y = X4, color = Y1))+
+                         aes(x = X1, y = cbrtX4, color = Y1))+
   geom_point()
 windows()
 data_scatter_y1 #simple plot showing the distribution of X1 and X4 values with corresponding Y1 values encoded as light blue (Y1 = 1) or dark blue (Y1 = 0)
