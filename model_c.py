@@ -25,6 +25,11 @@ cbrt = np.vectorize(cbrt)
 
 X = np.append(X, cbrt(X[:,0:4]), axis=1) #add the cube root features
 
+from sklearn.preprocessing import StandardScaler
+
+standard_scaler = StandardScaler()
+X = standard_scaler.fit_transform(X)
+
 X = pd.DataFrame(X,columns = feature_names)
 
 #Y1 Model fitting
@@ -32,7 +37,7 @@ X = pd.DataFrame(X,columns = feature_names)
 Y1_model = LogisticRegression()
 Y1_model.fit(X[['X1','cbrtX4']], Y1)
 B0,B1,B4 = np.concatenate((Y1_model.intercept_,Y1_model.coef_[0]),axis=0)
-print("Y1 Model: logit(Y1) = %.3f + (%.3f) * X1 + (%.3f) * X4^(1/3)" % (B0,B1,B4))
+print("Y1 Model (normalized variables): logit(Y1) = %.3f + (%.3f) * X1 + (%.3f) * X4^(1/3)" % (B0,B1,B4))
 
 #Y2 Model fitting
 
@@ -41,4 +46,4 @@ Y2_model.fit(X[['X3']], Y2)
 theta0,theta3 = Y2_model.intercept_,Y2_model.coef_[0][0]
 
 
-print("Y2 Model: logit(Y2) = %.3f + (%.3f) * X3" % (theta0,theta3))
+print("Y2 Model (normalized variables): logit(Y2) = %.3f + (%.3f) * X3" % (theta0,theta3))
