@@ -27,6 +27,11 @@ cbrt = np.vectorize(cbrt)
 
 X = np.append(X, cbrt(X[:,0:4]), axis=1) #add the cube root features
 
+from sklearn.preprocessing import StandardScaler
+
+standard_scaler = StandardScaler()
+X = standard_scaler.fit_transform(X)
+
 X = pd.DataFrame(X,columns = feature_names)
 
 from sklearn.linear_model import LogisticRegression
