@@ -41,13 +41,13 @@ cv_scores_Y1_X1_X3_X4 = cross_val_score(LR_model, X[['X1','X3','X4']], Y1, cv=10
 cv_scores_Y1_X1_X4 = cross_val_score(LR_model, X[['X1','X4']], Y1, cv=10)
 cv_scores_Y1_X1_cbrtX4 = cross_val_score(LR_model, X[['X1','cbrtX4']], Y1, cv=10)
 cv_scores_Y1_X1_X1sq_X4 = cross_val_score(LR_model, X[['X1','X1^2','X4']], Y1, cv=10)
-#cv_scores_SVC = cross_val_score(SVC_model_test, X, Y1, cv=10)
+cv_scores_SVC = cross_val_score(SVC_model_test, X, Y1, cv=10)
 
 print("Average accuracy of 10-fold cross-validation for logit model with X1, X3, and X4: %.1f%%" % np.average(cv_scores_Y1_X1_X3_X4*100))
 print("Average accuracy of 10-fold cross-validation for logit model with X1 and X4: %.1f%%" % np.average(cv_scores_Y1_X1_X4*100))
 print("Average accuracy of 10-fold cross-validation for logit model with X1 and X4^(1/3): %.1f%%" % np.average(cv_scores_Y1_X1_cbrtX4*100))
 print("Average accuracy of 10-fold cross-validation for logit model with X1, X1^2, and X4: %.1f%%" % np.average(cv_scores_Y1_X1_X1sq_X4*100))
-#print("Average accuracy of 10-fold cross-validation for support vector classification (SVC) model: %.1f%%" % np.average(cv_scores_SVC*100))
+print("Average accuracy of 10-fold cross-validation for support vector classification (SVC) model: %.1f%%" % np.average(cv_scores_SVC*100))
 
 LR_model.fit(X[['X1','cbrtX4']], Y1)
 
